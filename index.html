@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>APEX Marketing · Press Start</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#0a0a0a;--or:#ff5a1f;--fg:#f4ede4;--dim:#9a8f84;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--fg:#f4ede4}}
+:root[data-theme="dark"]{--bg:#0a0a0a;--fg:#f4ede4}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:11px/1.8 "Press Start 2P",ui-monospace,Menlo,monospace;overflow:hidden;position:relative}
+#bg{position:fixed;inset:0;width:100%;height:100%}
+.crt::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.scr{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:56px 14px 14px;text-align:center;z-index:2}
+.scr.on{display:flex}
+h1{font:400 clamp(90px,26vw,240px)/.9 Anton,Impact,sans-serif;margin:0;color:var(--or);letter-spacing:4px;animation:gl 2.4s infinite steps(1)}
+@keyframes gl{0%,90%{text-shadow:4px 4px 0 #fff3}92%{text-shadow:-6px 0 #0ff8,6px 0 #f0f8;transform:translateX(3px)}95%{text-shadow:6px 0 #0ff8,-6px 0 #f0f8;transform:translateX(-3px)}100%{text-shadow:4px 4px 0 #fff3;transform:none}}
+.sub{color:var(--dim);margin:14px 0 36px;font-size:10px}
+.blink{animation:bl 1s infinite steps(1);color:var(--fg);cursor:pointer;font-size:16px;background:none;border:0;font-family:inherit}
+@keyframes bl{50%{opacity:0}}
+h2{font:400 clamp(30px,6vw,52px) Anton,Impact,sans-serif;color:var(--or);margin:0 0 14px;letter-spacing:2px}
+.menu{display:flex;flex-direction:column;gap:10px;width:min(420px,92vw)}
+.btn{font:inherit;color:var(--fg);background:#000a;border:3px solid var(--or);padding:13px 16px;cursor:pointer;text-align:left;box-shadow:5px 5px 0 var(--or);transition:transform .08s}
+.btn.sel,.btn:hover{background:var(--or);color:#000;transform:translate(-2px,-2px)}
+.btn.sel::before{content:"▶ "}
+.btn:active{transform:translate(4px,4px);box-shadow:none}
+.box{border:3px solid var(--or);background:#000d;padding:18px;width:min(760px,94vw);max-height:72vh;overflow-y:auto;box-shadow:8px 8px 0 var(--or);text-align:left;animation:pop .25s}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.box p{margin:0 0 12px}.dim{color:var(--dim)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.card{border:2px solid var(--or);padding:10px;background:#1a0a04;cursor:pointer;font:inherit;color:var(--fg);text-align:left}
+.card:hover,.card.act{background:var(--or);color:#000}
+.card b{display:block;font-size:22px;margin-bottom:4px}
+a.card{text-decoration:none;display:block}
+#hud{position:fixed;top:env(safe-area-inset-top,0px);left:0;right:0;display:none;gap:8px;align-items:center;padding:8px 10px;z-index:20;background:#000c;border-bottom:3px solid var(--or)}
+#hud.on{display:flex}
+#xp{flex:1;height:12px;border:2px solid var(--or);min-width:40px}#xpf{height:100%;width:0;background:var(--or);transition:width .4s}
+.hb{font:inherit;font-size:9px;background:none;color:var(--fg);border:2px solid var(--or);padding:6px;cursor:pointer}.hb:hover{background:var(--or);color:#000}
+#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,200%);background:var(--or);color:#000;padding:12px 16px;z-index:70;transition:transform .35s;max-width:90vw;text-align:center}
+#toast.on{transform:translate(-50%,0)}
+canvas.g{border:3px solid var(--or);background:#000;max-width:100%;touch-action:manipulation;cursor:crosshair}
+.in{font:inherit;color:var(--fg);background:#000;border:3px solid var(--or);padding:12px;width:100%;box-sizing:border-box;outline:none}.in:focus{background:#1a0a04}
+.paused *{animation-play-state:paused!important}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.op{display:none;transform-box:fill-box;transform-origin:center}.talk .op{display:block;animation:mo .22s infinite steps(2)}.talk .cl{display:none}@keyframes mo{50%{transform:scaleY(.3)}}.ey{animation:bk 4s infinite;transform-box:fill-box;transform-origin:center}@keyframes bk{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}@keyframes fl{50%{transform:translateY(-6px)}}
+@media(max-width:560px){body{font-size:9px}.hb{padding:5px 4px}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="hud"><span id="lv">LV 1</span><div id="xp"><div id="xpf"></div></div>
+<button class="hb" id="bS">SND ON</button><button class="hb" id="bC">CRT ON</button><button class="hb" id="bP">PAUSE</button><button class="hb" id="bQ">QUIT</button></div>
+
+<section class="scr on" id="title"><h1>APEX</h1><div class="sub">MARKETING · WE BUILD. WE SCALE. WE DOMINATE.</div><button class="blink" id="start">PRESS START</button><div class="sub" style="margin-top:30px">ENTER / TAP TO PLAY</div></section>
+<section class="scr" id="menu"><h2>MAIN MENU</h2><div class="menu" id="mi"></div></section>
+<section class="scr" id="panel"><h2 id="pt"></h2><div class="box" id="pb"></div><div class="menu" style="margin-top:14px;width:auto;flex-direction:row"><button class="btn" id="back">◀ BACK</button><button class="btn" id="next" style="display:none">NEXT ▶</button></div></section>
+<section class="scr" id="sage"><div class="box" style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center"><div id="sw" style="width:170px;perspective:700px"></div><div style="flex:1;min-width:220px"><p id="sg" style="min-height:120px"></p><button class="btn sel" id="go">LET’S GO ▶</button></div></div></section>
+<section class="scr" id="pause"><h2>PAUSED</h2><div class="menu"><button class="btn sel" id="res">RESUME</button></div></section>
+<div id="toast"></div>
+
+<script>
+const WA="917907286868";
+const $=s=>document.querySelector(s);
+let snd=true,ac,paused=false,xp=0,seen={},tour=-1,sel=0,cur="title";
+function beep(f=440,d=.08,t="square"){if(!snd)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=t;o.frequency.value=f;g.gain.value=.04;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove("on"),2200)}
+function addXP(n,msg){const l0=Math.floor(xp/100);xp+=n;const l=Math.floor(xp/100);$("#lv").textContent="LV "+(l+1);$("#xpf").style.width=(xp%100)+"%";if(l>l0){beep(880,.3);toast("LEVEL UP! LV "+(l+1))}else if(msg)toast(msg)}
+function show(id){document.querySelectorAll(".scr").forEach(s=>s.classList.toggle("on",s.id===id));cur=id}
+
+const ITEMS=[["▶ START MISSION","tour"],["SERVICES","services"],["STRATEGY","strategy"],["CLIENTS","clients"],["MISSION","mission"],["WHY APEX","why"],["CONTACT","contact"]];
+const ORDER=["services","strategy","clients","mission","why","contact"];
+$("#mi").innerHTML=ITEMS.map((x,i)=>`<button class="btn" data-i="${i}">${x[0]}</button>`).join("");
+function paint(){document.querySelectorAll("#mi .btn").forEach((b,i)=>b.classList.toggle("sel",i===sel))}
+document.querySelectorAll("#mi .btn").forEach((b,i)=>{b.onmouseenter=()=>{if(sel!==i){sel=i;paint();beep(300,.03)}};b.onclick=()=>pick(i)});
+function pick(i){beep(660,.1);const k=ITEMS[i][1];if(k==="tour"){tour=0;open(ORDER[0])}else{tour=-1;open(k)}}
+function menu(){show("menu");paint()}
+const LINES=['Welcome, champion! You asked why APEX? Buckle up, because this is where brands become unforgettable.','We don’t do a little marketing. We BUILD. We SCALE. We DOMINATE. Every single move has a purpose!','All-in-one power: content, websites, social media and ads, all working together like one unstoppable squad.','AI-powered creatives so sharp that thumbs stop scrolling. Attention? Captured. Every time.','We are performance-driven. We hunt leads, we chase customers, we obsess over your growth, and we never stop optimizing.','Our strategy? Attract. Engage. Convert. Scale. Research, competitor analysis, data-tested, then perfected again and again. Steve Jobs would nod!','Every client gets a tailor-made plan. No copy-paste. Eleven brands have already levelled up with us, and yours could be next!','So, are you ready to make your brand impossible to ignore? Grab your power-ups below, then hit CONTACT!'];
+const NARR=`<div id='nm' style='perspective:700px;width:170px;margin:0 auto'><div id='nt' style='transform-style:preserve-3d;transition:transform .12s'><svg id='nsv' viewBox='0 0 200 230' style='width:100%;display:block;animation:fl 3s ease-in-out infinite'><defs><radialGradient id='sk' cx='.35' cy='.3' r='.8'><stop offset='0' stop-color='#ffd2a8'/><stop offset='.6' stop-color='#e8a46f'/><stop offset='1' stop-color='#b9743f'/></radialGradient><linearGradient id='su' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#555'/><stop offset='1' stop-color='#0d0d0d'/></linearGradient><linearGradient id='ha' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#6b4527'/><stop offset='1' stop-color='#1c0f08'/></linearGradient></defs><ellipse cx='100' cy='224' rx='70' ry='6' fill='#000a'/><path d='M20 230 Q22 170 70 160 L130 160 Q178 170 180 230Z' fill='url(#su)'/><path d='M80 160 L100 198 L120 160Z' fill='#f4ede4'/><path d='M95 172 L105 172 L109 214 L100 222 L91 214Z' fill='#ff5a1f'/><rect x='86' y='128' width='28' height='36' rx='10' fill='url(#sk)'/><ellipse cx='100' cy='146' rx='24' ry='8' fill='#0005'/><ellipse cx='54' cy='96' rx='7' ry='11' fill='url(#sk)'/><ellipse cx='146' cy='96' rx='7' ry='11' fill='url(#sk)'/><ellipse cx='100' cy='90' rx='46' ry='54' fill='url(#sk)'/><path d='M52 84 Q46 28 100 28 Q154 28 148 84 Q140 52 100 50 Q60 52 52 84Z' fill='url(#ha)'/><path d='M66 72 Q80 64 94 72M106 72 Q120 64 134 72' stroke='#2b1a10' stroke-width='4' fill='none' stroke-linecap='round'/><g class='ey'><ellipse cx='80' cy='88' rx='9' ry='7' fill='#fff'/><circle cx='82' cy='88' r='4' fill='#2b1a10'/></g><g class='ey'><ellipse cx='120' cy='88' rx='9' ry='7' fill='#fff'/><circle cx='122' cy='88' r='4' fill='#2b1a10'/></g><rect x='62' y='76' width='36' height='26' rx='9' fill='#bfe9ff' fill-opacity='.22' stroke='#111' stroke-width='3'/><rect x='102' y='76' width='36' height='26' rx='9' fill='#bfe9ff' fill-opacity='.22' stroke='#111' stroke-width='3'/><path d='M98 86 Q100 82 102 86' stroke='#111' stroke-width='3' fill='none'/><path d='M68 80 L78 80 L68 92Z M108 80 L118 80 L108 92Z' fill='#fff' fill-opacity='.5'/><path d='M100 94 Q95 110 102 112' stroke='#b9743f' stroke-width='3' fill='none' stroke-linecap='round'/><ellipse cx='72' cy='112' rx='8' ry='5' fill='#ff7a5a' fill-opacity='.25'/><ellipse cx='128' cy='112' rx='8' ry='5' fill='#ff7a5a' fill-opacity='.25'/><path class='cl' d='M82 126 Q100 138 118 126' stroke='#8a3b2a' stroke-width='4' fill='none' stroke-linecap='round'/><g class='op'><ellipse cx='100' cy='129' rx='13' ry='9' fill='#5a1f14'/><rect x='91' y='122' width='18' height='4' rx='2' fill='#fff'/></g></svg></div></div><div style='border:3px solid var(--or);background:#1a0a04;padding:12px;margin:8px 0 14px'><p id='nl' style='min-height:96px;margin:0 0 10px'></p><span class='dim' id='nc'></span> <button class='btn' id='nn' style='padding:8px 12px;margin-left:8px'>...</button></div>`;
+function narrate(){let li=0,iv;const e=$('#nl'),b=$('#nn'),sv=$('#nsv');const say=()=>{clearInterval(iv);const t=LINES[li];let i=0;e.textContent='';sv.classList.add('talk');b.textContent='...';$('#nc').textContent=(li+1)+'/'+LINES.length;iv=setInterval(()=>{if(cur!=='panel'||!e.isConnected)return clearInterval(iv);if(!paused){e.textContent=t.slice(0,++i);if(i%3===0)beep(240+li*20,.02)}if(i>=t.length){clearInterval(iv);sv.classList.remove('talk');b.textContent=li<LINES.length-1?'NEXT ▶':'↻ REPLAY'}},24)};b.onclick=()=>{li=li<LINES.length-1?li+1:0;say()};say()}
+addEventListener('pointermove',e=>{const v='rotateY('+((e.clientX/innerWidth-.5)*40)+'deg) rotateX('+((.5-e.clientY/innerHeight)*25)+'deg)';document.querySelectorAll('#nt,#nt2').forEach(t=>t.style.transform=v)});
+const ROWS=["......HHHHHHHH......",".....HHHHHHHHHH.....",".....HHSSSSSSHH.....",".....HSSSSSSSSH.....",".....GGGGGGGGGG.....",".....GLLGSSGLLG.....",".....GLLGSSGLLG.....",".....GGGGSSGGGG.....",".....SSSSSSSSSS.....","......SSMMMMSSSSS...","........SSSS.SSSS...","...DDDDDBBBBDDDDDD..","..DDDDDDBBBBDDDDDDD.","..DDDDDDDDDDDDDDSSD.","..DDSSDDDDDDDDDDDDD.","..DDDDDDDDDDDDDDDDD.","..DDDDDDDDDDDDDDDDD.","...DDDDDDDDDDDDDDD.."],COL={H:"#2b1a10",S:"#f2b27c",G:"#111",L:"#bfe9ff",M:"#8a3b2a",B:"#ff5a1f",D:"#3a3a3a"};
+function sage(){show("sage");$("#sw").innerHTML="<div id='nt2' style='transform-style:preserve-3d;transition:transform .12s'>"+NARR.match(/<svg[\s\S]*<\/svg>/)[0].replace(/id='nsv'/,"id='sv2'").replace(/(id='|#)(sk|su|ha)\b/g,(m,a,b)=>a+b+"2")+"</div>";const sv=$("#sv2");sv.classList.add("talk");const t="Hmm… it’s never too late. It’s now or never! Let’s start building your brand, a brand that becomes everyone’s gossip topic.";const e=$("#sg");let i=0;e.textContent="";const iv=setInterval(()=>{if(cur!=="sage")return clearInterval(iv);if(!paused){e.textContent=t.slice(0,++i);if(i%3===0)beep(260,.02)}if(i>=t.length){clearInterval(iv);sv.classList.remove("talk")}},28);$("#go").onclick=()=>{clearInterval(iv);beep(700,.12);menu();toast("PLAYER 1 READY")}}
+function startGame(){if(cur!=="title")return;$("#hud").classList.add("on");beep(520,.15);setTimeout(()=>beep(780,.2),120);sage()}
+
+const S={
+services:["SERVICES",()=>{const d=[["📈","DATA-DRIVEN ADS","Meta and Instagram campaigns built on audience research and tested through data."],["📱","SOCIAL MEDIA","Strategic social media management that keeps your brand in front of the right people."],["🎬","VIDEO EDITING","High-quality video editing that captures attention."],["🤖","AI CREATIVES","AI-powered creatives and innovative content."],["🌐","WEBSITES","Professional website development."]];
+return `<p class="dim">TAP A SKILL TO INSPECT IT</p><div class="grid">${d.map(x=>`<button class="card" data-d="${x[2]}"><b>${x[0]}</b>${x[1]}</button>`).join("")}</div><p id="info" style="margin-top:14px;min-height:50px"></p>`},m=>{m.querySelectorAll(".card").forEach(c=>c.onclick=()=>{m.querySelectorAll(".card").forEach(z=>z.classList.remove("act"));c.classList.add("act");$("#info").textContent=c.dataset.d;beep(520,.06);addXP(5)})}],
+strategy:["STRATEGY",()=>`<p>OUR STRATEGY:</p><div class="grid">${["ATTRACT","ENGAGE","CONVERT","SCALE"].map((s,i)=>`<div class="card" style="cursor:default"><b>${i+1}</b>${s}</div>`).join("")}</div><p style="margin-top:14px" class="dim">Audience research, competitor analysis, compelling content, targeted ads, then constant testing and optimizing for ROI.</p><button class="btn" id="play">PLAY: LEAD RUSH</button><div id="gm" style="margin-top:12px;text-align:center"></div>`,m=>{$("#play").onclick=lead}],
+clients:["CLIENTS",()=>{const u=["ateliex.ae","gravityxpeditions.com","prosperauae.com","livara.care","zymushospital.com","electraimmigration.com","westinclothings.com","daralshai.ae","dostudie.com","rapelsolutions.com","ansarsmeptrainers.com"];return `<p class="dim">${u.length} LEVELS CLEARED. TAP TO VISIT.</p><div class="grid">${u.map((x,i)=>`<a class="card" target="_blank" rel="noopener" href="https://${x}"><b>${String(i+1).padStart(2,"0")}</b>${x}</a>`).join("")}</div>`},m=>{m.querySelectorAll("a").forEach(a=>a.onclick=()=>addXP(5,"+5 XP"))}],
+mission:["MISSION",()=>`<p id="ty"></p><p class="dim" style="margin-top:16px">SELECT YOUR PLAYER:</p><div class="grid">${["REAL ESTATE OWNERS","BUSINESS OWNERS","START-UPS","BROKERS"].map(x=>`<button class="card">${x}</button>`).join("")}</div><p id="info" style="margin-top:12px"></p>`,m=>{const t="We transform ambitious businesses into powerful, unforgettable brands through strategic marketing, bold creativity, and intelligent technology. We don’t just help brands get noticed. We help them become impossible to ignore.";let i=0;const e=$("#ty");const iv=setInterval(()=>{if(cur!=="panel"||!e.isConnected)return clearInterval(iv);if(!paused){e.textContent=t.slice(0,++i);if(i%3===0)beep(200,.02)}if(i>=t.length)clearInterval(iv)},22);m.querySelectorAll(".card").forEach(c=>c.onclick=()=>{m.querySelectorAll(".card").forEach(z=>z.classList.remove("act"));c.classList.add("act");$("#info").textContent="PLAYER 1: "+c.textContent+" · READY";beep(700,.1);addXP(5)})}],
+why:["WHY APEX?",()=>{const d=["ALL-IN-ONE STRATEGY|Content, websites, social media and ads working together.","AI-POWERED CREATIVITY|Innovative content that captures attention.","PERFORMANCE-DRIVEN|Focus on leads, customers and business growth.","TAILORED SOLUTIONS|Strategies built around each client’s goals.","DATA-DRIVEN DECISIONS|Optimizing campaigns based on performance.","GROWTH-FOCUSED MINDSET|Turning brand visibility into meaningful results."];return `${NARR}<p class="dim">POWER-UPS COLLECTED: <span id="pc">0</span>/6</p><div class="grid">${d.map(x=>{const[a,b]=x.split("|");return `<button class="card" data-d="${b}"><b>⭐</b>${a}</button>`}).join("")}</div><p id="info" style="margin-top:14px;min-height:40px"></p>`},m=>{narrate();let n=0;m.querySelectorAll(".card").forEach(c=>c.onclick=()=>{if(!c.classList.contains("act")){c.classList.add("act");$("#pc").textContent=++n;addXP(5);if(n===6)toast("ACHIEVEMENT: ALL POWER-UPS!")}$("#info").textContent=c.dataset.d;beep(600+n*60,.08)})}],
+contact:["CONTINUE?",()=>`<p style="text-align:center;font-size:28px" id="cd">10</p><p style="text-align:center">READY TO MAKE YOUR BRAND IMPOSSIBLE TO IGNORE?</p><div class="menu" style="margin:0 auto" id="cb"><button class="btn sel" id="ci">INSERT COIN · LET’S TALK</button></div><div id="cf" style="display:none"><p style="text-align:center">🪙 INSERT COIN</p><div class="menu" style="margin:0 auto"><input class="in" id="fn" placeholder="NAME" autocomplete="name"><input class="in" id="fe" type="email" placeholder="EMAIL" autocomplete="email"><input class="in" id="fp" type="tel" placeholder="PHONE NUMBER" autocomplete="tel"><a class="btn sel" id="fs" target="_blank" rel="noopener" href="#" style="text-decoration:none;text-align:center">SEND ▶</a><p class="dim" style="text-align:center;font-size:9px;margin:0">If WhatsApp doesn’t open, message +91 79072 86868</p></div></div>`,m=>{let n=10;const e=$("#cd");const f=()=>{$("#cf").style.display="";$("#cb").style.display="none";beep(900,.2)};$("#ci").onclick=f;const iv=setInterval(()=>{if(cur!=="panel"||!e.isConnected)return clearInterval(iv);if(!paused&&n>0){e.textContent=--n;if(n===0){clearInterval(iv);f()}}},1000);const A=$("#fs"),fx=()=>{const em=$("#fe").value.trim(),ph=$("#fp").value.trim(),nm=$("#fn").value.trim();const t="New lead from APEX website 🔥\nName: "+(nm||"-")+"\nEmail: "+em+"\nPhone: "+ph;return{em,ph,u:"https://wa.me/"+WA+"?text="+encodeURIComponent(t)}};["fn","fe","fp"].forEach(i=>$("#"+i).oninput=()=>{A.href=fx().u;$("#"+i).style.borderColor=""});A.href=fx().u;A.onclick=ev=>{const d=fx();const p10=d.ph.replace(/[\s-]/g,"").replace(/^(\+91|91|0)(?=\d{10}$)/,"");if(!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(d.em)){ev.preventDefault();$("#fe").style.borderColor="#f33";toast("INVALID EMAIL");beep(150,.25);return}if(!/^[6-9]\d{9}$/.test(p10)){ev.preventDefault();$("#fp").style.borderColor="#f33";toast("INVALID INDIAN PHONE NUMBER");beep(150,.25);return}A.href=d.u;try{fetch("https://formsubmit.co/ajax/jaggusmainacc@gmail.com",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({name:$("#fn").value.trim()||"-",email:d.em,phone:d.ph,_subject:"New APEX website lead"})}).catch(()=>{})}catch(x){}addXP(50,"LEAD SENT! +50 XP")}}]
+};
+function open(id){const s=S[id];$("#pt").textContent=s[0];const m=$("#pb");m.innerHTML=s[1]();show("panel");s[2](m);beep(500,.1);if(!seen[id]){seen[id]=1;addXP(25,"+25 XP · "+s[0]);if(Object.keys(seen).length===ORDER.length)setTimeout(()=>toast("ACHIEVEMENT: FULL CLEAR!"),2400)}
+const nx=$("#next");nx.style.display=tour>=0&&tour<ORDER.length-1?"":"none";nx.onclick=()=>{tour++;open(ORDER[tour])}}
+$("#back").onclick=()=>{beep(300,.08);menu()};
+$("#start").onclick=startGame;$("#title").onclick=startGame;
+$("#bS").onclick=e=>{snd=!snd;e.target.textContent=snd?"SND ON":"SND OFF";beep(500)};
+$("#bC").onclick=e=>{const o=document.body.classList.toggle("crt");e.target.textContent=o?"CRT ON":"CRT OFF"};
+document.body.classList.add("crt");
+function setPause(p){if(cur==="title")return;paused=p;document.body.classList.toggle("paused",p);if(p){window._prev=cur;show("pause")}else show(window._prev||"menu");$("#bP").textContent=p?"PLAY":"PAUSE";beep(400)}
+$("#bP").onclick=()=>setPause(!paused);$("#res").onclick=()=>setPause(false);
+$("#bQ").onclick=()=>{paused=false;document.body.classList.remove("paused");$("#hud").classList.remove("on");$("#bP").textContent="PAUSE";show("title");beep(200,.2)};
+document.addEventListener("keydown",e=>{if(e.target.tagName==="INPUT")return;const k=e.key;if(k==="p"||k==="P")return setPause(!paused);if(cur==="title"&&(k==="Enter"||k===" "))return startGame();if(cur==="sage"&&!e.repeat&&(k==="Enter"||k===" "))return $("#go").click();
+if(cur==="menu"){if(k==="ArrowDown"){sel=(sel+1)%ITEMS.length;paint();beep(300,.03)}else if(k==="ArrowUp"){sel=(sel+ITEMS.length-1)%ITEMS.length;paint();beep(300,.03)}else if(k==="Enter")pick(sel)}
+else if(cur==="panel"){if(k==="Escape")menu();else if(k==="ArrowRight"&&tour>=0&&tour<ORDER.length-1){tour++;open(ORDER[tour])}}else if(cur==="pause"&&(k==="Enter"||k==="Escape"))setPause(false)});
+
+/* background embers */
+const cv=$("#bg"),g=cv.getContext("2d");let W,H,mx=-999,my=-999;const P=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}rs();addEventListener("resize",rs);
+function mk(x,y,b){return{x:x??Math.random()*W,y:y??Math.random()*H,vx:(Math.random()-.5)*(b?6:.4),vy:b?(Math.random()-.9)*5:-(.3+Math.random()*1.2),r:1+Math.random()*3,l:b?1:99}}
+for(let i=0;i<90;i++)P.push(mk());
+addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY});
+addEventListener("pointerdown",e=>{for(let i=0;i<14;i++)P.push(mk(e.clientX,e.clientY,1))});
+(function loop(){requestAnimationFrame(loop);if(paused)return;g.clearRect(0,0,W,H);
+for(let i=P.length-1;i>=0;i--){const p=P[i];const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);if(d<120){p.vx+=dx/d*.4;p.vy+=dy/d*.4}p.x+=p.vx;p.y+=p.vy;p.vx*=.98;if(p.l<99){p.l-=.02;if(p.l<=0){P.splice(i,1);continue}}if(p.y<-10){p.y=H+10;p.x=Math.random()*W;p.vy=-(.3+Math.random()*1.2)}
+g.globalAlpha=Math.min(1,p.l)*.8;g.fillStyle=p.r>2.5?"#ffb347":"#ff5a1f";g.fillRect(p.x,p.y,p.r,p.r)}g.globalAlpha=1})();
+
+/* mini-game */
+function lead(){const gm=$("#gm");gm.innerHTML=`<p>CATCH THE LEADS! <span id="sc">0</span> · <span id="tm">20</span>s</p><canvas class="g" id="gc" width="320" height="300"></canvas>`;$("#play").style.display="none";
+const c=$("#gc"),x=c.getContext("2d");let L=[],score=0,t=20,sp=0,run=true;
+const tick=setInterval(()=>{if(!paused&&--t<=0){run=false;clearInterval(tick);end()}$("#tm")&&($("#tm").textContent=Math.max(t,0))},1000);
+c.addEventListener("pointerdown",e=>{const r=c.getBoundingClientRect(),px=(e.clientX-r.left)*320/r.width,py=(e.clientY-r.top)*300/r.height;for(let i=L.length-1;i>=0;i--){if(Math.hypot(L[i].x-px,L[i].y-py)<L[i].r+8){L.splice(i,1);score++;$("#sc").textContent=score;beep(500+score*20,.06);break}}});
+function end(){const st=["ATTRACT","ENGAGE","CONVERT","SCALE"][Math.min(3,Math.floor(score/10))];const b=score*3;addXP(b);gm.innerHTML=`<p>TIME! ${score} LEADS · STAGE: ${st}</p><button class="btn" id="again">PLAY AGAIN</button>`;$("#again").onclick=()=>{$("#play").style.display="";lead()};beep(900,.3)}
+(function f(){if(!run||!c.isConnected)return;requestAnimationFrame(f);if(paused)return;x.fillStyle="#000";x.fillRect(0,0,320,300);
+if(++sp%22===0)L.push({x:20+Math.random()*280,y:-10,r:8+Math.random()*8,v:1+Math.random()*1.6+score/25});
+L=L.filter(l=>(l.y+=l.v)<310);L.forEach(l=>{x.fillStyle="#ff5a1f";x.fillRect(l.x-l.r,l.y-l.r,l.r*2,l.r*2);x.fillStyle="#000";x.fillRect(l.x-3,l.y-3,6,6)})})()}
+</script>
+</body>
+</html>
